@@ -1,0 +1,84 @@
+:root { 
+    --maxw: 980px;
+}
+
+* { 
+    box-sizing: border-box; 
+}
+
+body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;  
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 100vh;
+    width: 100%;
+}
+
+.bg-img {
+    position: absolute;
+    background-color: rgb(135, 135, 135);
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.bg-img, img{
+    height: 100vh;
+    mix-blend-mode: multiply;
+}
+
+.main-container {
+    width: 50%;
+    padding: 50px;
+    background-color: white;
+    z-index: 1;
+    border-radius: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    height: auto;
+}
+
+h1 { 
+    margin: 0 0 16px; 
+}
+
+.header img {
+    height: 50px;
+}
+
+label {
+    opacity: 0.5;
+    font-weight: 600; 
+    display: block; 
+    margin: 24px 0px 8px; 
+    
+}
+
+input {
+    margin: 5px 0 5px 0;
+    font-size: 18px;
+}
+
+.dates-container {
+    display: flex;
+    gap: 50px;
+}
+
+button { 
+    padding: 10px 14px; 
+    border: 0; 
+    border-radius: 8px; 
+    background: #2563eb; 
+    color: #fff; 
+    cursor: pointer; 
+    margin-top: 10px; 
+}
+
+.output-header {}

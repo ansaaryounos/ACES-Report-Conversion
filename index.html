@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Overlay HTML on PDF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <div class="bg-img">
+        <img src="bg.jpg">
+    </div>
+
+    <div class="main-container">
+        <div class="header">
+            <h1>ACES Report Generator</h1>
+            <img src="aces.png">
+        </div>
+
+        <label>1. Upload an Uptick formatted Report</label>
+        <input type="file" id="pdfFile" accept="application/pdf" />
+
+        <label>2. Fill in Details</label>
+        <input type="text" id="property" placeholder="Property"/>
+        <input type="text" id="client" placeholder="Client"/>
+        <input type="text" id="task" placeholder="Task Ref"/>
+
+        <div class="dates-container">
+            
+            <div class="issued-container">
+                <label>Issued On:</label>
+                <input type="date" id="issueDate"> 
+            </div>
+            <div class="performed-container">
+                <label>Performed On:</label>
+                <input type="date" id="performDate"> 
+            </div>
+        </div>
+
+        <label>3. Download Edited Report</label>
+        <button id="runBtn">Download File</button>
+
+        <div id="myHeader" class="main-container">
+            <div>
+              <h1>Service Report</h1>
+            </div>
+            <div>
+              <div>Issued: 19th May 2025</div>
+              <div>Performed: 18th May 2025</div>
+            </div>
+          </div>
+    </div>
+
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="script.js"></script>
+    
+    </body>
+</html>
