@@ -56,7 +56,7 @@ runBtn.addEventListener('click', async () => {
 
       page.drawRectangle({
         x: 0,
-        y: pageH - 50,   // top of page
+        y: pageH - 40,   // top of page
         width: pageW,
         height: 100,
         color: rgb(1, 1, 1),
