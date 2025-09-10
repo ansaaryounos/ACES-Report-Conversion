@@ -5,11 +5,12 @@
   <title>Overlay HTML on PDF</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.cdnfonts.com/css/helvetica-neue-5" rel="stylesheet">
+
 </head>
 <body>
 
     <div class="bg-img">
-        <img src="bg.jpg">
     </div>
 
     <div class="main-container">
@@ -22,38 +23,64 @@
         <input type="file" id="pdfFile" accept="application/pdf" />
 
         <label>2. Fill in Details</label>
-        <input type="text" id="property" placeholder="Property"/>
-        <input type="text" id="client" placeholder="Client"/>
-        <input type="text" id="task" placeholder="Task Ref"/>
+        <input type="text" id="property-input" placeholder="Property"/>
+        <input type="text" id="client-input" placeholder="Client"/>
+        <input type="text" id="task-input" placeholder="Task Ref"/>
 
         <div class="dates-container">
             
             <div class="issued-container">
                 <label>Issued On:</label>
-                <input type="date" id="issueDate"> 
+                <input type="date" id="issued-input"> 
             </div>
             <div class="performed-container">
                 <label>Performed On:</label>
-                <input type="date" id="performDate"> 
+                <input type="date" id="performed-input"> 
             </div>
         </div>
 
         <label>3. Download Edited Report</label>
         <button id="runBtn">Download File</button>
 
-        <div id="myHeader" class="main-container">
-            <div>
-              <h1>Service Report</h1>
+        <div id="myHeader" class="o-wrapper">
+            <div class="o-sub-wrapper">
+                <div class="o-header">
+                    <h1>Client Service Report</h1>
+                    <img src="aces.png">
+                </div>
+                <div class="o-info-container">
+                    <div id="o-property-container">
+                        <h2>Property:</h2>
+                        <p id="property">Property</p>
+                    </div>
+                    <div id="o-client-container">
+                        <h2>Client:</h2>
+                        <p id="client">Client</p>
+                    </div>
+                    <div id="o-task-container">
+                        <h2>Task:</h2>
+                        <p id="task">Task</p>
+                    </div>
+                    <div id="o-date-container">
+                        <h2>Issued By:</h2>
+                        <p>Admin</p>
+                        <p id="issued">Date</p>
+                        <h2>Performed Date:</h2>
+                        <p id="performed">Date</p>
+                    </div>
+                </div>
             </div>
-            <div>
-              <div>Issued: 19th May 2025</div>
-              <div>Performed: 18th May 2025</div>
-            </div>
-          </div>
+        </div>
+    </div>
+
+    <div class="mark">
+        <p>Powered by Ansaar Younos</p>
+        <img src="Logo.png">
     </div>
 
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
     <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    
     <script src="script.js"></script>
     
     </body>

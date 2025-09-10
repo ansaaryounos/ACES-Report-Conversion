@@ -1,102 +1,127 @@
-// Requirements in your HTML:
-// <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-// <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-// An <input type="file" id="pdfFile" accept="application/pdf">
-// A <button id="runBtn">Overlay</button>
-// An element to capture: <div id="myHeader"> ...children... </div>
-
 const fileEl = document.getElementById('pdfFile');
 const runBtn = document.getElementById('runBtn');
 
-const ELEMENT_ID = 'myHeader';    // <- your element must have this id
-const APPLY_TO_ALL_PAGES = false;
-const COVER_OLD_HEADER = true;
-const RENDER_SCALE = 1;
-const PT_PER_CSS_PX = 72 / 96;
+const propertyInput = document.getElementById('property-input');
+const clientInput = document.getElementById('client-input');
+const taskInput = document.getElementById('task-input');
+const issuedInput = document.getElementById('issued-input');
+const performedInput = document.getElementById('performed-input');
+
+const propertyOuput = document.getElementById('property');
+const clientOutput = document.getElementById('client');
+const taskOutput = document.getElementById('task');
+const issuedOutput = document.getElementById('issued');
+const performedOutput = document.getElementById('performed');
+
 
 runBtn.addEventListener('click', async () => {
   try {
     const file = fileEl.files?.[0];
     if (!file) return alert('Choose a PDF first.');
 
-    // 1) Load PDF
     const pdfBytes = await file.arrayBuffer();
     const { PDFDocument, rgb } = PDFLib;
     const pdfDoc = await PDFDocument.load(pdfBytes);
+
     const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
 
-    // 2) Find the element
-    const el = document.getElementById(ELEMENT_ID);
-    if (!el) throw new Error(`#${ELEMENT_ID} not found`);
-
-    // Ensure fonts loaded
-    if (document.fonts?.ready) await document.fonts.ready;
-
-    // 3) Capture element + children with html2canvas
-    const canvas = await html2canvas(el, {
-      backgroundColor: '#ffffff',
-      scale: RENDER_SCALE,
-      useCORS: true,
-      foreignObjectRendering: true,
-      onclone: (doc) => {
-        const cloneEl = doc.getElementById(ELEMENT_ID);
-        if (!cloneEl) return;
-        // strip problematic styles during render
-        cloneEl.querySelectorAll('*').forEach(node => {
-          node.style.mixBlendMode = 'normal';
-          node.style.filter = 'none';
-        });
-      }
-    });
-    
-
-    // Debug: append the canvas to page so you can check it
-    document.body.appendChild(canvas);
-
-    // 4) Convert canvas to PNG bytes
+    // 1. Convert your HTML element into a canvas image
+    const element = document.getElementById('myHeader');
+    const canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2 });
     const dataUrl = canvas.toDataURL('image/png');
-    const imgBytes = await (await fetch(dataUrl)).arrayBuffer();
-    const png = await pdfDoc.embedPng(imgBytes);
+    const imgBytes = await fetch(dataUrl).then(res => res.arrayBuffer());
 
-    // 5) Compute size in PDF points
-    const rect = el.getBoundingClientRect();
-    const naturalWpt = rect.width * PT_PER_CSS_PX;
-    const naturalHpt = rect.height * PT_PER_CSS_PX;
+    // 2. Embed the image in the PDF
+    const pngImage = await pdfDoc.embedPng(imgBytes);
+    const pageW = firstPage.getWidth();
+    const pageH = firstPage.getHeight();
 
-    function drawOnPage(page) {
+    // scale image to full page width
+    const imgW = pageW;
+    const imgH = (pngImage.height / pngImage.width) * imgW;
+
+    // Optional: white bar behind it
+    firstPage.drawRectangle({
+      x: 0,
+      y: pageH - imgH,
+      width: pageW,
+      height: imgH,
+      color: rgb(1, 1, 1),
+    });
+
+    for (const page of pages) {
       const pageW = page.getWidth();
       const pageH = page.getHeight();
-
-      // scale to full page width
-      const drawW = pageW;
-      const drawH = (naturalHpt / naturalWpt) * drawW;
-
-      const x = 0;
-      const y = pageH - drawH;
-
-      if (COVER_OLD_HEADER) {
-        page.drawRectangle({ x, y, width: pageW, height: drawH, color: rgb(1,1,1) });
-      }
-
-      page.drawImage(png, { x, y, width: drawW, height: drawH });
+    
+      // White box at the bottom (100pt tall, full width)
+      page.drawRectangle({
+        x: 0,
+        y: 0,             // bottom of the page
+        width: pageW,
+        height: 100,      // 100pt tall
+        color: rgb(1, 1, 1)
+      });
     }
 
-    if (APPLY_TO_ALL_PAGES) {
-      for (const page of pages) drawOnPage(page);
-    } else {
-      drawOnPage(pages[0]);
-    }
+    // Draw the image at the top of the page
+    firstPage.drawImage(pngImage, {
+      x: 0,
+      y: pageH - imgH,
+      width: imgW,
+      height: imgH,
+    });
 
-    // 6) Save and download
-    const out = await pdfDoc.save();
-    const url = URL.createObjectURL(new Blob([out], { type: 'application/pdf' }));
+    // 3. Save and download
+    const outBytes = await pdfDoc.save();
+    const blob = new Blob([outBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+
     const a = document.createElement('a');
     a.href = url;
-    a.download = `overlay-${file.name}`;
+    a.download = `ACES-${file.name}`;
     a.click();
     URL.revokeObjectURL(url);
   } catch (err) {
     console.error(err);
-    alert(err.message || 'Something went wrong — see console.');
+    alert('Something went wrong — check console.');
   }
 });
+
+propertyInput.addEventListener('input', () => {
+  property.innerHTML = propertyInput.value;
+});
+
+clientInput.addEventListener('input', () => {
+  clientOutput.innerHTML = clientInput.value;
+});
+
+taskInput.addEventListener('input', () => {
+  taskOutput.innerHTML = taskInput.value;
+});
+
+issuedInput.addEventListener('input', () => {
+  issuedOutput.innerHTML = formatDatePretty(issuedInput.value);
+});
+
+performedInput.addEventListener('input', () => {
+  performedOutput.innerHTML = formatDatePretty(performedInput.value);
+});
+
+function formatDatePretty(dateInput) {
+  const date = new Date(dateInput);
+
+  if (isNaN(date)) return ''; // invalid date
+
+  const day = date.getDate();
+  const month = date.toLocaleString('en-US', { month: 'short' }); // "Nov"
+  const year = date.getFullYear();
+
+  // add ordinal suffix
+  const suffix =
+    day % 10 === 1 && day !== 11 ? 'st' :
+    day % 10 === 2 && day !== 12 ? 'nd' :
+    day % 10 === 3 && day !== 13 ? 'rd' : 'th';
+
+  return `${day}${suffix} ${month} ${year}`;
+}
