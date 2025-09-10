@@ -53,6 +53,14 @@ runBtn.addEventListener('click', async () => {
     for (const page of pages) {
       const pageW = page.getWidth();
       const pageH = page.getHeight();
+
+      page.drawRectangle({
+        x: 0,
+        y: pageH - 100,   // top of page
+        width: pageW,
+        height: 100,
+        color: rgb(1, 1, 1),
+      });
     
       // White box at the bottom (100pt tall, full width)
       page.drawRectangle({
