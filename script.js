@@ -49,7 +49,7 @@ runBtn.addEventListener('click', async () => {
     const imgH = (pngImage.height / pngImage.width) * imgW;
     const imgH2 = (footerImage.height / footerImage.width) * imgW;
 
-    const logoBytes = await fetch('aces.png').then(res => res.arrayBuffer());
+    const logoBytes = await fetch('./aces.png').then(res => res.arrayBuffer());
     const logoImage = await pdfDoc.embedPng(logoBytes); // or embedJpg
 
     // Optional: white bar behind it
